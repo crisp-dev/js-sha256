@@ -1,7 +1,7 @@
 {
   "name": "js-sha256",
-  "version": "0.9.0",
-  "description": "A simple SHA-256 / SHA-224 hash function for JavaScript supports UTF-8 encoding.",
+  "version": "0.9.0-diet",
+  "description": "A simple SHA-256 hash function for JavaScript supports UTF-8 encoding.",
   "main": "src/sha256.js",
   "devDependencies": {
     "expect.js": "~0.3.1",
@@ -23,7 +23,6 @@
   "keywords": [
     "sha",
     "sha2",
-    "sha224",
     "sha256",
     "hash",
     "encryption",

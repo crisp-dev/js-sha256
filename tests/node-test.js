@@ -6,7 +6,6 @@ function unset() {
   delete require.cache[require.resolve('./test.js')];
   delete require.cache[require.resolve('./hmac-test.js')];
   sha256 = null;
-  sha224 = null;
   BUFFER = undefined;
   JS_SHA256_NO_WINDOW = undefined;
   JS_SHA256_NO_NODE_JS = undefined;
@@ -18,7 +17,6 @@ function unset() {
 
 function requireToGlobal() {
   sha256 = require('../src/sha256.js').sha256;
-  sha224 = require('../src/sha256.js').sha224;
 }
 
 function runCommonJsTest() {
@@ -69,7 +67,6 @@ JS_SHA256_NO_ARRAY_BUFFER_IS_VIEW = false;
 window = global;
 define = function (func) {
   sha256 = func();
-  sha224 = sha256.sha224;
   require('./test.js');
   require('./hmac-test.js');
 };
