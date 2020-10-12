@@ -28,7 +28,7 @@
     0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
   ];
 
-  var b = [];
+  var bl = [];
 
   if (!Array.isArray) {
     Array.isArray = function (obj) {
@@ -44,11 +44,11 @@
 
   function Sha256(memory) {
     if (memory) {
-      b[0] = b[16] = b[1] = b[2] = b[3] =
-        b[4] = b[5] = b[6] = b[7] =
-        b[8] = b[9] = b[10] = b[11] =
-        b[12] = b[13] = b[14] = b[15] = 0;
-      this.blocks = b;
+      bl[0] = bl[16] = bl[1] = bl[2] = bl[3] =
+        bl[4] = bl[5] = bl[6] = bl[7] =
+        bl[8] = bl[9] = bl[10] = bl[11] =
+        bl[12] = bl[13] = bl[14] = bl[15] = 0;
+      this.blocks = bl;
     } else {
       this.blocks = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
@@ -88,48 +88,48 @@
       }
       notString = true;
     }
-    var code, index = 0, i, length = message.length, b = this.blocks;
+    var code, index = 0, i, length = message.length, bl = this.blocks;
 
     while (index < length) {
       if (this.hashed) {
         this.hashed = false;
-        b[0] = this.block;
-        b[16] = b[1] = b[2] = b[3] =
-          b[4] = b[5] = b[6] = b[7] =
-          b[8] = b[9] = b[10] = b[11] =
-          b[12] = b[13] = b[14] = b[15] = 0;
+        bl[0] = this.block;
+        bl[16] = bl[1] = bl[2] = bl[3] =
+          bl[4] = bl[5] = bl[6] = bl[7] =
+          bl[8] = bl[9] = bl[10] = bl[11] =
+          bl[12] = bl[13] = bl[14] = bl[15] = 0;
       }
 
       if (notString) {
         for (i = this.start; index < length && i < 64; ++index) {
-          b[i >> 2] |= message[index] << SH[i++ & 3];
+          bl[i >> 2] |= message[index] << SH[i++ & 3];
         }
       } else {
         for (i = this.start; index < length && i < 64; ++index) {
           code = message.charCodeAt(index);
           if (code < 0x80) {
-            b[i >> 2] |= code << SH[i++ & 3];
+            bl[i >> 2] |= code << SH[i++ & 3];
           } else if (code < 0x800) {
-            b[i >> 2] |= (0xc0 | (code >> 6)) << SH[i++ & 3];
-            b[i >> 2] |= (0x80 | (code & 0x3f)) << SH[i++ & 3];
+            bl[i >> 2] |= (0xc0 | (code >> 6)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | (code & 0x3f)) << SH[i++ & 3];
           } else if (code < 0xd800 || code >= 0xe000) {
-            b[i >> 2] |= (0xe0 | (code >> 12)) << SH[i++ & 3];
-            b[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SH[i++ & 3];
-            b[i >> 2] |= (0x80 | (code & 0x3f)) << SH[i++ & 3];
+            bl[i >> 2] |= (0xe0 | (code >> 12)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | (code & 0x3f)) << SH[i++ & 3];
           } else {
             code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
-            b[i >> 2] |= (0xf0 | (code >> 18)) << SH[i++ & 3];
-            b[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SH[i++ & 3];
-            b[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SH[i++ & 3];
-            b[i >> 2] |= (0x80 | (code & 0x3f)) << SH[i++ & 3];
+            bl[i >> 2] |= (0xf0 | (code >> 18)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | (code & 0x3f)) << SH[i++ & 3];
           }
         }
       }
 
-      this.lastIdx = i;
+      this.lastByteIndex = i;
       this.bytes += i - this.start;
       if (i >= 64) {
-        this.block = b[16];
+        this.block = bl[16];
         this.start = i - 64;
         this.hash();
         this.hashed = true;
@@ -149,43 +149,43 @@
       return;
     }
     this.finalized = true;
-    var b = this.blocks, i = this.lastIdx;
-    b[16] = this.block;
-    b[i >> 2] |= EX[i & 3];
-    this.block = b[16];
+    var bl = this.blocks, i = this.lastByteIndex;
+    bl[16] = this.block;
+    bl[i >> 2] |= EX[i & 3];
+    this.block = bl[16];
     if (i >= 56) {
       if (!this.hashed) {
         this.hash();
       }
-      b[0] = this.block;
-      b[16] = b[1] = b[2] = b[3] =
-        b[4] = b[5] = b[6] = b[7] =
-        b[8] = b[9] = b[10] = b[11] =
-        b[12] = b[13] = b[14] = b[15] = 0;
+      bl[0] = this.block;
+      bl[16] = bl[1] = bl[2] = bl[3] =
+        bl[4] = bl[5] = bl[6] = bl[7] =
+        bl[8] = bl[9] = bl[10] = bl[11] =
+        bl[12] = bl[13] = bl[14] = bl[15] = 0;
     }
-    b[14] = this.hBytes << 3 | this.bytes >>> 29;
-    b[15] = this.bytes << 3;
+    bl[14] = this.hBytes << 3 | this.bytes >>> 29;
+    bl[15] = this.bytes << 3;
     this.hash();
   };
 
   Sha256.prototype.hash = function () {
     var a = this.h0, b = this.h1, c = this.h2, d = this.h3, e = this.h4, f = this.h5, g = this.h6,
-      h = this.h7, b = this.blocks, j, s0, s1, maj, t1, t2, ch, ab, da, cd, bc;
+      h = this.h7, bl = this.blocks, j, s0, s1, maj, t1, t2, ch, ab, da, cd, bc;
 
     for (j = 16; j < 64; ++j) {
       // rightrotate
-      t1 = b[j - 15];
+      t1 = bl[j - 15];
       s0 = ((t1 >>> 7) | (t1 << 25)) ^ ((t1 >>> 18) | (t1 << 14)) ^ (t1 >>> 3);
-      t1 = b[j - 2];
+      t1 = bl[j - 2];
       s1 = ((t1 >>> 17) | (t1 << 15)) ^ ((t1 >>> 19) | (t1 << 13)) ^ (t1 >>> 10);
-      b[j] = b[j - 16] + s0 + b[j - 7] + s1 << 0;
+      bl[j] = bl[j - 16] + s0 + bl[j - 7] + s1 << 0;
     }
 
     bc = b & c;
     for (j = 0; j < 64; j += 4) {
       if (this.first) {
         ab = 704751109;
-        t1 = b[0] - 210244248;
+        t1 = bl[0] - 210244248;
         h = t1 - 1521486534 << 0;
         d = t1 + 143694565 << 0;
         this.first = false;
@@ -195,7 +195,7 @@
         ab = a & b;
         maj = ab ^ (a & c) ^ bc;
         ch = (e & f) ^ (~e & g);
-        t1 = h + s1 + ch + K[j] + b[j];
+        t1 = h + s1 + ch + K[j] + bl[j];
         t2 = s0 + maj;
         h = d + t1 << 0;
         d = t1 + t2 << 0;
@@ -205,7 +205,7 @@
       da = d & a;
       maj = da ^ (d & b) ^ ab;
       ch = (h & e) ^ (~h & f);
-      t1 = g + s1 + ch + K[j + 1] + b[j + 1];
+      t1 = g + s1 + ch + K[j + 1] + bl[j + 1];
       t2 = s0 + maj;
       g = c + t1 << 0;
       c = t1 + t2 << 0;
@@ -214,7 +214,7 @@
       cd = c & d;
       maj = cd ^ (c & a) ^ da;
       ch = (g & h) ^ (~g & e);
-      t1 = f + s1 + ch + K[j + 2] + b[j + 2];
+      t1 = f + s1 + ch + K[j + 2] + bl[j + 2];
       t2 = s0 + maj;
       f = b + t1 << 0;
       b = t1 + t2 << 0;
@@ -223,7 +223,7 @@
       bc = b & c;
       maj = bc ^ (b & d) ^ cd;
       ch = (f & g) ^ (~f & h);
-      t1 = e + s1 + ch + K[j + 3] + b[j + 3];
+      t1 = e + s1 + ch + K[j + 3] + bl[j + 3];
       t2 = s0 + maj;
       e = a + t1 << 0;
       a = t1 + t2 << 0;
@@ -295,16 +295,12 @@
       (h3 >> 24) & 0xFF, (h3 >> 16) & 0xFF, (h3 >> 8) & 0xFF, h3 & 0xFF,
       (h4 >> 24) & 0xFF, (h4 >> 16) & 0xFF, (h4 >> 8) & 0xFF, h4 & 0xFF,
       (h5 >> 24) & 0xFF, (h5 >> 16) & 0xFF, (h5 >> 8) & 0xFF, h5 & 0xFF,
-      (h6 >> 24) & 0xFF, (h6 >> 16) & 0xFF, (h6 >> 8) & 0xFF, h6 & 0xFF
+      (h6 >> 24) & 0xFF, (h6 >> 16) & 0xFF, (h6 >> 8) & 0xFF, h6 & 0xFF,
+      (h7 >> 24) & 0xFF, (h7 >> 16) & 0xFF, (h7 >> 8) & 0xFF, h7 & 0xFF
     ];
-    if (!this.is224) {
-      arr.push((h7 >> 24) & 0xFF, (h7 >> 16) & 0xFF, (h7 >> 8) & 0xFF, h7 & 0xFF);
-    }
     return arr;
   };
 
-  Sha256.prototype.array = Sha256.prototype.digest;
-  
   function HmacSha256(key, memory) {
     var i, type = typeof key;
     if (type === 'string') {
@@ -346,7 +342,7 @@
     }
 
     if (key.length > 64) {
-      key = (new Sha256(true)).update(key).array();
+      key = (new Sha256(true)).update(key).digest();
     }
 
     var oKeyPad = [], iKeyPad = [];
@@ -369,7 +365,7 @@
     Sha256.prototype.finalize.call(this);
     if (this.inner) {
       this.inner = false;
-      var innerHash = this.array();
+      var innerHash = this.digest();
       Sha256.call(this, this.memory);
       this.update(this.oKeyPad);
       this.update(innerHash);
@@ -379,8 +375,9 @@
 
   var exports = function () {
     var method = function (message) {
-      return new Sha256(true).update(message).hex();
+      return new Sha256(true).update(message)["hex"]();
     };
+
     method.create = function () {
       return new Sha256();
     };
@@ -394,8 +391,9 @@
 
   exports.sha256.hmac = function () {
     var method = function (key, message) {
-      return new HmacSha256(key, true).update(message).hex();
+      return new HmacSha256(key, true).update(message)["hex"]();
     };
+
     method.create = function (key) {
       return new HmacSha256(key);
     };
