@@ -67,30 +67,30 @@
     this.first = true;
   }
 
-  Sha256.prototype.update = function (message) {
+  Sha256.prototype.update = function (msg) {
     if (this.finalized) {
       return;
     }
-    var notString, type = typeof message;
+    var notStr, type = typeof msg;
     if (type !== 'string') {
       if (type === 'object') {
-        if (message === null) {
+        if (msg === null) {
           throw new Error(ER);
-        } else if (AB && message.constructor === ArrayBuffer) {
-          message = new Uint8Array(message);
-        } else if (!Array.isArray(message)) {
-          if (!AB || !ArrayBuffer.isView(message)) {
+        } else if (AB && msg.constructor === ArrayBuffer) {
+          msg = new Uint8Array(msg);
+        } else if (!Array.isArray(msg)) {
+          if (!AB || !ArrayBuffer.isView(msg)) {
             throw new Error(ER);
           }
         }
       } else {
         throw new Error(ER);
       }
-      notString = true;
+      notStr = true;
     }
-    var code, index = 0, i, length = message.length, bl = this.blocks;
+    var cd, idx = 0, i, len = msg.length, bl = this.blocks;
 
-    while (index < length) {
+    while (idx < len) {
       if (this.hashed) {
         this.hashed = false;
         bl[0] = this.block;
@@ -100,28 +100,28 @@
           bl[12] = bl[13] = bl[14] = bl[15] = 0;
       }
 
-      if (notString) {
-        for (i = this.start; index < length && i < 64; ++index) {
-          bl[i >> 2] |= message[index] << SH[i++ & 3];
+      if (notStr) {
+        for (i = this.start; idx < len && i < 64; ++idx) {
+          bl[i >> 2] |= msg[idx] << SH[i++ & 3];
         }
       } else {
-        for (i = this.start; index < length && i < 64; ++index) {
-          code = message.charCodeAt(index);
-          if (code < 0x80) {
-            bl[i >> 2] |= code << SH[i++ & 3];
-          } else if (code < 0x800) {
-            bl[i >> 2] |= (0xc0 | (code >> 6)) << SH[i++ & 3];
-            bl[i >> 2] |= (0x80 | (code & 0x3f)) << SH[i++ & 3];
-          } else if (code < 0xd800 || code >= 0xe000) {
-            bl[i >> 2] |= (0xe0 | (code >> 12)) << SH[i++ & 3];
-            bl[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SH[i++ & 3];
-            bl[i >> 2] |= (0x80 | (code & 0x3f)) << SH[i++ & 3];
+        for (i = this.start; idx < len && i < 64; ++idx) {
+          cd = msg.charCodeAt(idx);
+          if (cd < 0x80) {
+            bl[i >> 2] |= cd << SH[i++ & 3];
+          } else if (cd < 0x800) {
+            bl[i >> 2] |= (0xc0 | (cd >> 6)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | (cd & 0x3f)) << SH[i++ & 3];
+          } else if (cd < 0xd800 || cd >= 0xe000) {
+            bl[i >> 2] |= (0xe0 | (cd >> 12)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | ((cd >> 6) & 0x3f)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | (cd & 0x3f)) << SH[i++ & 3];
           } else {
-            code = 0x10000 + (((code & 0x3ff) << 10) | (message.charCodeAt(++index) & 0x3ff));
-            bl[i >> 2] |= (0xf0 | (code >> 18)) << SH[i++ & 3];
-            bl[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SH[i++ & 3];
-            bl[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SH[i++ & 3];
-            bl[i >> 2] |= (0x80 | (code & 0x3f)) << SH[i++ & 3];
+            cd = 0x10000 + (((cd & 0x3ff) << 10) | (msg.charCodeAt(++idx) & 0x3ff));
+            bl[i >> 2] |= (0xf0 | (cd >> 18)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | ((cd >> 12) & 0x3f)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | ((cd >> 6) & 0x3f)) << SH[i++ & 3];
+            bl[i >> 2] |= (0x80 | (cd & 0x3f)) << SH[i++ & 3];
           }
         }
       }
@@ -304,27 +304,27 @@
   function HmacSha256(key, memory) {
     var i, type = typeof key;
     if (type === 'string') {
-      var bytes = [], length = key.length, index = 0, code;
-      for (i = 0; i < length; ++i) {
-        code = key.charCodeAt(i);
-        if (code < 0x80) {
-          bytes[index++] = code;
-        } else if (code < 0x800) {
-          bytes[index++] = (0xc0 | (code >> 6));
-          bytes[index++] = (0x80 | (code & 0x3f));
-        } else if (code < 0xd800 || code >= 0xe000) {
-          bytes[index++] = (0xe0 | (code >> 12));
-          bytes[index++] = (0x80 | ((code >> 6) & 0x3f));
-          bytes[index++] = (0x80 | (code & 0x3f));
+      var by = [], len = key.length, idx = 0, cd;
+      for (i = 0; i < len; ++i) {
+        cd = key.charCodeAt(i);
+        if (cd < 0x80) {
+          by[idx++] = cd;
+        } else if (cd < 0x800) {
+          by[idx++] = (0xc0 | (cd >> 6));
+          by[idx++] = (0x80 | (cd & 0x3f));
+        } else if (cd < 0xd800 || cd >= 0xe000) {
+          by[idx++] = (0xe0 | (cd >> 12));
+          by[idx++] = (0x80 | ((cd >> 6) & 0x3f));
+          by[idx++] = (0x80 | (cd & 0x3f));
         } else {
-          code = 0x10000 + (((code & 0x3ff) << 10) | (key.charCodeAt(++i) & 0x3ff));
-          bytes[index++] = (0xf0 | (code >> 18));
-          bytes[index++] = (0x80 | ((code >> 12) & 0x3f));
-          bytes[index++] = (0x80 | ((code >> 6) & 0x3f));
-          bytes[index++] = (0x80 | (code & 0x3f));
+          cd = 0x10000 + (((cd & 0x3ff) << 10) | (key.charCodeAt(++i) & 0x3ff));
+          by[idx++] = (0xf0 | (cd >> 18));
+          by[idx++] = (0x80 | ((cd >> 12) & 0x3f));
+          by[idx++] = (0x80 | ((cd >> 6) & 0x3f));
+          by[idx++] = (0x80 | (cd & 0x3f));
         }
       }
-      key = bytes;
+      key = by;
     } else {
       if (type === 'object') {
         if (key === null) {
@@ -374,15 +374,15 @@
   };
 
   var exports = function () {
-    var method = function (message) {
-      return new Sha256(true).update(message)["hex"]();
+    var method = function (msg) {
+      return new Sha256(true).update(msg)["hex"]();
     };
 
     method.create = function () {
       return new Sha256();
     };
-    method.update = function (message) {
-      return method.create().update(message);
+    method.update = function (msg) {
+      return method.create().update(msg);
     };
     return method;
   }();
@@ -390,15 +390,15 @@
   exports.sha256 = exports;
 
   exports.sha256.hmac = function () {
-    var method = function (key, message) {
-      return new HmacSha256(key, true).update(message)["hex"]();
+    var method = function (key, msg) {
+      return new HmacSha256(key, true).update(msg)["hex"]();
     };
 
     method.create = function (key) {
       return new HmacSha256(key);
     };
-    method.update = function (key, message) {
-      return method.create(key).update(message);
+    method.update = function (key, msg) {
+      return method.create(key).update(msg);
     };
     return method;
   }();
