@@ -14,7 +14,7 @@
     "test": "nyc mocha tests/node-test.js",
     "report": "nyc --reporter=html --reporter=text mocha tests/node-test.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "build": "uglifyjs src/sha256.js -c -m eval --comments -o build/sha256.min.js"
+    "_build": "uglifyjs src/sha256.js -c -m eval --comments -o build/sha256.min.js"
   },
   "repository": {
     "type": "git",
