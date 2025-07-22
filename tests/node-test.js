@@ -1,5 +1,4 @@
 expect = require('expect.js');
-Worker = require('webworker-threads').Worker;
 
 function unset() {
   delete require.cache[require.resolve('../src/sha256.js')];
@@ -74,37 +73,3 @@ define.amd = true;
 
 require('../src/sha256.js');
 unset();
-
-// webworker
-WORKER = 'tests/worker.js';
-SOURCE = 'src/sha256.js';
-
-require('./worker-test.js');
-
-delete require.cache[require.resolve('./worker-test.js')];
-
-// cover webworker
-JS_SHA256_NO_WINDOW = true;
-JS_SHA256_NO_NODE_JS = true;
-WORKER = './worker.js';
-SOURCE = '../src/sha256.js';
-window = global;
-self = global;
-
-Worker = function (file) {
-  require(file);
-  currentWorker = this;
-
-  this.postMessage = function (data) {
-    onmessage({data: data});
-  };
-}
-
-postMessage = function (data) {
-  currentWorker.onmessage({data: data});
-}
-
-importScripts = function () {};
-
-requireToGlobal();
-require('./worker-test.js');

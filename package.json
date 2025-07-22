@@ -1,20 +1,16 @@
 {
   "name": "js-sha256",
-  "version": "0.9.0-diet",
+  "version": "0.10.0-diet",
   "description": "A simple SHA-256 hash function for JavaScript supports UTF-8 encoding.",
-  "main": "src/sha256.js",
-  "devDependencies": {
-    "expect.js": "~0.3.1",
-    "mocha": "~2.3.4",
-    "nyc": "^11.3.0",
-    "uglify-js": "^3.1.9",
-    "webworker-threads": "^0.7.13"
-  },
+  "main": "dist/sha256.esm.js",
+  "module": "dist/sha256.esm.js",
+  "types": "dist/index.d.ts",
+  "sourceType": "module",
   "scripts": {
     "test": "nyc mocha tests/node-test.js",
     "report": "nyc --reporter=html --reporter=text mocha tests/node-test.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "_build": "uglifyjs src/sha256.js -c -m eval --comments -o build/sha256.min.js"
+    "_build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -39,5 +35,14 @@
     "exclude": [
       "tests"
     ]
+  },
+  "devDependencies": {
+    "expect.js": "~0.3.1",
+    "mocha": "~2.3.4",
+    "nyc": "^11.3.0",
+    "@rollup/plugin-commonjs": "28.0.6",
+    "@rollup/plugin-node-resolve": "16.0.1",
+    "@rollup/plugin-terser": "0.4.4",
+    "rollup": "4.45.1"
   }
 }
