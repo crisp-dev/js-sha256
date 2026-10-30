@@ -1,6 +1,9 @@
 {
-  "name": "js-sha256",
-  "version": "0.10.0-diet",
+  "name": "@crisp-fix/js-sha256",
+  "version": "0.10.2",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "A simple SHA-256 hash function for JavaScript supports UTF-8 encoding.",
   "main": "dist/sha256.esm.js",
   "module": "dist/sha256.esm.js",
@@ -10,7 +13,7 @@
     "test": "nyc mocha tests/node-test.js",
     "report": "nyc --reporter=html --reporter=text mocha tests/node-test.js",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "_build": "rollup -c"
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
